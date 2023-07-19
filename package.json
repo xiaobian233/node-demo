@@ -1,0 +1,22 @@
+{
+  "name": "koa2-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cross-env NODE_EVN=dev nodemon ./bin/www.js",
+    "prod": "cross-env NODE_EVN=production nodemon ./bin/www.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cross-env": "^7.0.3",
+    "nodemon": "^3.0.1"
+  },
+  "devDependencies": {
+    "mysql": "^2.18.1",
+    "querystring": "^0.2.1"
+  }
+}
