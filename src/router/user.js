@@ -5,16 +5,11 @@ const methodData = proxyG({
   "/api/user/login": (val, req) => login(req.body),
 });
 const handlerUser = async (req, res) => {
-  try {
-    let data = await methodData[path(req)](query(req), req);
-    if (data === null) return null;
-    if (data) data = new SuccessModel(data, req);
-    else data = new ErrorModel(data, req);
-    return data;
-  } catch (e) {
-    console.error(e);
-    return false;
-  }
+	let data = await methodData[path(req)](query(req), req)
+	if (data === null) return null
+	if (data) data = new SuccessModel(data, req)
+	else data = new ErrorModel(data, req)
+	return data
 };
 
 module.exports = handlerUser;
