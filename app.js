@@ -7,10 +7,12 @@ const handlerDlog = require('./src/router/blog')
 const handlerUser = require('./src/router/user')
 const handler404 = require('./src/router/404')
 const { jsons, postchunk } = require('./src/uilts')
-
+const { USERHASLOGIN } = require('./src/uilts/userId')
 const serverHanlder = (req, res) => {
+	handers.map(x => res.setHeader(...x))
+	USERHASLOGIN(req, res)
+	// 初始化值
 	postchunk(req, async () => {
-		handers.map((x) => res.setHeader(...x))
 		let end = null
 		// blog
 		end = await handlerDlog(req, res)
