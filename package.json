@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "cross-env NODE_EVN=dev nodemon ./bin/www.js",
-    "prod": "cross-env NODE_EVN=production nodemon ./bin/www.js"
+    "dev": "cross-env NODE_ENV=dev nodemon ./bin/www.js",
+    "prod": "cross-env NODE_ENV=production nodemon ./bin/www.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "mysql": "^2.18.1",
-    "querystring": "^0.2.1"
+    "querystring": "^0.2.1",
+    "redis": "^4.6.7"
   }
 }
