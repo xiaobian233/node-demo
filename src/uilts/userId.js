@@ -1,50 +1,69 @@
-let userIdMap = new Map()
-let userId = () => `${Date.now()}_${Math.random()}`
-const setUserId = (req, res) => {
-	req.session = { userId: userId() }
-	userIdMap.set(req.session.userId, true)
-	return req.session.userId
-}
+const { get, set, del } = require('../db/redis')
+const { ErrorModel } = require('../model')
 
-const getUserId = req => req.session.userId
+const userId = () => `${Date.now()}_${Math.random()}`
 
-const setCookie = (req, res) => {
+const getCookie = req => req.cookie
+
+const resetCookie = (req, res) => res.setHeader('Set-Cookie', '')
+
+const setCookie = (req, res, userId) => {
 	const getCookieDate = (time = 24 * 60 * 60 * 1000) => {
 		const d = new Date()
 		d.setTime(d.getTime() + time)
 		return d.toGMTString()
 	}
-	let userId = setUserId(req)
 	res.setHeader(
 		'Set-Cookie',
 		`userId=${userId}; path=/; httpOnly; expires=${getCookieDate()}`
 	)
 }
 
-const resetCookie = (req, res) => res.setHeader('Set-Cookie', '')
-
-const getCookie = req => req.cookie
-
-const getCookieUserId = req => getCookie(req)?.userId || null
-
 // 登录cookie添加操作
-const USERHASLOGIN = (req, res) => {
-	let userId = getCookieUserId(req)
-	if (!userId) {
+const USERHASLOGIN = async (req, res) => {
+	let cookie = getCookie(req)
+	let add = () => {
 		resetCookie(req, res)
-		req.createUserId = () => setCookie(req, res)
-	} else if (userIdMap.has(userId)) {
-		userIdMap.delete(userId)
-		setCookie(req, res)
+		req.checkUserId = (user = {}) => {
+			let userIDD = userId()
+			set(userIDD, user)
+			setCookie(req, res, userIDD)
+		}
+		req.error = -1
+		req.errorMsg = `暂无权限, 请重新登录`
+	}
+	if (!cookie) {
+		add()
+		return
+	} else {
+		let { userId } = cookie
+		if (userId) {
+			let user = await get(userId)
+			set(userId(), user)
+			del(userId)
+			setCookie(req, res)
+			return
+		} else {
+			add()
+		}
 	}
 }
 
+function USERHAS(req) {
+	USERHAS.USERHASREQ = req
+	if (req.error === -1) return null
+}
+
+Object.defineProperty(USERHAS, 'msg', {
+	get: () => {
+		return new ErrorModel(USERHAS.USERHASREQ.errorMsg)
+	},
+})
+
 module.exports = {
-	setUserId,
-	getUserId,
 	setCookie,
 	resetCookie,
 	getCookie,
-	getCookieUserId,
 	USERHASLOGIN,
+	USERHAS,
 }

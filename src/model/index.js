@@ -16,7 +16,7 @@ class BaseModel {
     return this.returnData();
   }
   returnData() {
-    let modelMsg = Object.assign({}, { data: this.data, error: this.error });
+    let modelMsg = Object.assign({}, { data: this.data, error: this.error, message: this.message });
     return modelMsg;
   }
 }

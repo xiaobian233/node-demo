@@ -11,7 +11,7 @@ function set(key, val) {
 	redisClient.set(key, val)
 }
 
-function get() {
+function get(key, val) {
 	return new Promise((res, rej) => {
 		redisClient.get(key, (err, val) => {
 			if (err) return rej(err)
@@ -25,7 +25,12 @@ function get() {
 	})
 }
 
+function del(key) {
+	redisClient.del(key)
+}
+
 module.exports = {
 	get,
 	set,
+	del
 }
