@@ -6,7 +6,9 @@ const url = req => req.url
 
 const path = req => req.url.split('?')[0]
 
-const query = req => querystring.parse(req.url.split('?')[1])
+const query = req =>
+	(req.url.indexOf('?') > -1 && querystring.parse(req.url.split('?')[1])) ||
+	null
 
 const method = req => req.method
 

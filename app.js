@@ -8,11 +8,13 @@ const handlerUser = require('./src/router/user')
 const handler404 = require('./src/router/404')
 const { jsons, postchunk, path } = require('./src/uilts')
 const { USERHASLOGIN } = require('./src/uilts/userId')
+const { access } = require('./src/uilts/log')
 const serverHanlder = (req, res) => {
 	handers.map(x => res.setHeader(...x))
 	USERHASLOGIN(req, res)
 	// 初始化值
 	postchunk(req, async () => {
+		access(req, res)
 		let u = path(req)
 		let end = null
 		// blog

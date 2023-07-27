@@ -32,7 +32,6 @@ const setCookie = (req, res, userId) => {
 // 登录cookie添加操作
 const USERHASLOGIN = async (req, res) => {
 	let cookie = getCookie(req)
-	console.error(cookie, 'cookie');
 	let add = () => {
 		resetCookie(req, res)
 		req.checkUserId = function (user = {}) {
