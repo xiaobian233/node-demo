@@ -1,9 +1,19 @@
 const { get, set, del } = require('../db/redis')
 const { ErrorModel } = require('../model')
 
-const userId = () => `${Date.now()}_${Math.random()}`
+const newUserId = () => `${Date.now()}_${Math.random()}`
 
-const getCookie = req => req.cookie
+const getCookie = req => {
+	if (!req.headers.cookie) return null
+	let cookie = {}
+	const cookieStr = req.headers.cookie || ''
+	cookieStr.split(';').forEach(item => {
+		if (!item) return
+		const arr = item.split('=')
+		cookie[arr[0].trim()] = arr[1].trim()
+	})
+	return cookie
+}
 
 const resetCookie = (req, res) => res.setHeader('Set-Cookie', '')
 
@@ -22,10 +32,11 @@ const setCookie = (req, res, userId) => {
 // 登录cookie添加操作
 const USERHASLOGIN = async (req, res) => {
 	let cookie = getCookie(req)
+	console.error(cookie, 'cookie');
 	let add = () => {
 		resetCookie(req, res)
-		req.checkUserId = (user = {}) => {
-			let userIDD = userId()
+		req.checkUserId = function (user = {}) {
+			let userIDD = newUserId()
 			set(userIDD, user)
 			setCookie(req, res, userIDD)
 		}
@@ -38,10 +49,12 @@ const USERHASLOGIN = async (req, res) => {
 	} else {
 		let { userId } = cookie
 		if (userId) {
+			console.error(userId, 'userId');
 			let user = await get(userId)
-			set(userId(), user)
+			let userId2 = newUserId()
+			set(userId2, user)
 			del(userId)
-			setCookie(req, res)
+			setCookie(req, res, userId2)
 			return
 		} else {
 			add()

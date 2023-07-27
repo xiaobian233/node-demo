@@ -8,8 +8,10 @@ const methodData = proxyG({
 const handlerUser = async (req, res) => {
 	let data = await methodData[path(req)](query(req), req)
 	if (data === null) return null
-	if (data) data = new SuccessModel(data)
-	else data = new ErrorModel(data)
+	if (data) {
+		data = new SuccessModel(data)
+		req.checkUserId && req.checkUserId()
+	} else data = new ErrorModel(data)
 	return data
 }
 
