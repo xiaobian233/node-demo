@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Document</title>
+</head>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<style>
+	* {
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+
+	body {
+		margin-left: 100px;
+	}
+</style>
+
+<body></body>
+<div>
+	<div>
+		<h2>登录</h2>
+		<br />
+		<span><label>账号</label><input value="zhangsan" id="input1" type="text" /></span>
+		<span><label>账号</label><input value="Aa1234.." id="input2" type="text" /></span>
+		<button id="btn">登录</button>
+	</div>
+	<br />
+	<div>
+		<h2>新增数据</h2>
+		<br />
+		<span><label>标题</label><input id="inp1" type="text" /></span>
+		<span><label>内容</label><input id="inp2" type="text" /></span>
+		<span><label>别称</label><input id="inp3" type="text" /></span>
+		<button id="btn2">提交</button>
+	</div>
+	<br />
+	<div>
+		<h2>获取列表</h2>
+		<br />
+		<ui id="uilist"> </ui>
+	</div>
+</div>
+
+<script>
+	let token = null
+	const gets = key => sessionStorage.getItem(key)
+	const sets = (key, val) => sessionStorage.setItem(key, val)
+	const pa = val => JSON.parse(val)
+	const st = val => JSON.stringify(val)
+	const error = r => r.code == 401 && alert(r.message) && false
+	const get = url => $.get(url)
+	const post = (url, data = {}, success) => {
+		let aj = {
+			url,
+			method: 'post',
+			data,
+			xhrFields: { withCredentials: true },
+			crossDomain: true,
+			success(data) { error(data) && success(data) }
+		}
+		if (token) aj.headers = { authorization: token }
+		$.ajax(aj)
+	}
+	const click = (dom, cb) => $(dom).on('click', cb)
+	const U = {
+		login: 'http://localhost:8000/api/user/login',
+		new: 'http://localhost:8000/api/blog/new',
+		list: `http://localhost:8000/api/blog/list`
+	}
+
+	window.onload = async function () {
+		if (gets('user')) {
+			let user = pa(gets('user'))
+			token = user.token
+		}
+		click('#btn', () => {
+			let username = $('#input1').val()
+			let password = $('#input2').val()
+			post(U.login, { username, password }, r => {
+				if (r.code == 0) {
+					token = r.data.token
+					sets('user', st(r.data))
+				}
+			})
+		})
+		click('#btn2', () => {
+			let username = $('#inp1').val()
+			let content = $('#inp2').val()
+			let author = $('#inp3').val()
+			post(U.new, { username, content, author }, r => {
+				if (r.code == 0) alert('新增成功')
+			})
+		})
+		const listFn = async () => {
+			let data = await get(U.list)
+			let str = ''
+			data.data.map(x => {
+				str += `<li>
+							<h5>标题: ${x.title}</h5>
+							<p>内容: ${x.content}</p>
+							<p>时间: ${x.createtime}</p>
+						</li>
+						<br />
+						`
+			})
+			$('#uilist').html(str)
+		}
+		await listFn()
+	}
+</script>
+
+</html>

@@ -24,7 +24,19 @@ app.use(
 	// 	alloweHeaders: ['Conten-Type'], // 服务器支持的所有头信息字段
 	// 	credentials: true, // 是否允许发送Cookie载请附上原文出处链接及本声明。
 	// })
-	cors()
+	cors({
+		exposeHeaders: ['WWW-Authenticate', 'Server-Authorization', 'Date'],
+		maxAge: 100,
+		credentials: true,
+		allowMethods: ['GET', 'POST'],
+		allowHeaders: [
+			'Content-Type',
+			'Authorization',
+			'Accept',
+			'X-Custom-Header',
+			'anonymous',
+		],
+	})
 )
 // middlewares
 app.use(
