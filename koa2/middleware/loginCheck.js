@@ -1,9 +1,10 @@
 const { ErrorModel } = require('../model/index')
 
 module.exports = async (ctx, next) => {
+	console.error(ctx.session, 'ctx.session', ctx.session.username);
 	if (ctx.session.username) {
 		await next()
 		return
 	}
-	ctx.bodt = new ErrorModel('未登录')
+	ctx.body = new ErrorModel('未登录')
 }
