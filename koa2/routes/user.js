@@ -4,7 +4,6 @@ router.prefix('/api/user')
 
 router.post('/login', async function (ctx, next) {
 	let { username, password } = ctx.request.body
-	console.error(ctx)
 	ctx.body = {
 		error: 0,
 		username,
@@ -12,7 +11,7 @@ router.post('/login', async function (ctx, next) {
 	}
 })
 
-router.get('/session', async (ctx, next) => {
+router.get('/login-test', async (ctx, next) => {
 	if (ctx.session.viewCount == null) {
 		ctx.session.viewCount = 0
 	}
