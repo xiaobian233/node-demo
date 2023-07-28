@@ -48,7 +48,6 @@ const USERHASLOGIN = async (req, res) => {
 	} else {
 		let { userId } = cookie
 		if (userId) {
-			console.error(userId, 'userId');
 			let user = await get(userId)
 			let userId2 = newUserId()
 			set(userId2, user)
