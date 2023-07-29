@@ -1,8 +1,8 @@
 const env = process.env.NODE_ENV
 let MYSQL_CONF = null
 let AUTHORIZATION = {
-    jwtSecret: 'jwtSecret',
-    tokenExpiresTime: 60 * 1 // 60分钟
+	jwtSecret: 'jwtSecret',
+	tokenExpiresTime: 60 * 60 * 12, // 60分钟
 }
 const MYSQL_CONFFN = () => {
 	if (env == 'dev') {
@@ -44,5 +44,5 @@ REDIS_CONFFN()
 module.exports = {
 	MYSQL_CONF,
 	REDIS_CONF,
-	AUTHORIZATION
+	AUTHORIZATION,
 }

@@ -24,7 +24,6 @@ router.get('/detail', async (ctx, next) => {
 
 router.post('/new', loginCheck, async (ctx, next) => {
 	const body = ctx.request.body
-	body.author = ctx.session.username
 	const data = await newBlog(body)
 	ctx.body = new SuccessModel(data)
 })
@@ -37,9 +36,7 @@ router.post('/upload', loginCheck, async (ctx, next) => {
 })
 
 router.get('/delete', loginCheck, async (ctx, next) => {
-	// deleteID
-	const author = ctx.session.username
-	const val = await deleteID(ctx.query.id, author)
+	const val = await deleteID(ctx.query.id, ctx.query.author)
 	if (!val) return (ctx.body = new ErrorModel('删除失败'))
 	ctx.body = new SuccessModel(val)
 })

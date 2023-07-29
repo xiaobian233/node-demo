@@ -16,26 +16,36 @@ const user = require('./routes/user')
 
 // error handler
 onerror(app)
+
+app.keys = ['SESSION_ID']
 app.use(
-	// cors({
-	// 	origin: '*', // 允许来自指定域名请求
-	// 	maxAge: 5, // 本次预检请求的有效期，单位为秒。
-	// 	methods: ['GET', 'POST'], // 所允许的HTTP请求方法
-	// 	alloweHeaders: ['Conten-Type'], // 服务器支持的所有头信息字段
-	// 	credentials: true, // 是否允许发送Cookie载请附上原文出处链接及本声明。
-	// })
+	session({
+		key: 'SESSION_ID',
+		cookie: {
+			maxAge: 24 * 60 * 60 * 1000,
+			path: '/',
+			// domain: 'http://127.0.0.1',
+			httpOnly: true,
+			overwrite: false,
+			sameSite: 'none',
+		},
+		store: redisStore({
+			// all: '127.0.0.1:6379',
+			all: `${REDIS_CONF.host}:${REDIS_CONF.prot}`,
+		}),
+	})
+)
+app.use(
 	cors({
-		exposeHeaders: ['WWW-Authenticate', 'Server-Authorization', 'Date'],
-		maxAge: 100,
+		origin: function () {
+			return 'http://127.0.0.1:8000'
+		},
 		credentials: true,
-		allowMethods: ['GET', 'POST'],
-		allowHeaders: [
-			'Content-Type',
-			'Authorization',
-			'Accept',
-			'X-Custom-Header',
-			'anonymous',
-		],
+		exposeHeaders: ['WWW-Authenticate', 'Server-Authorization'],
+		maxAge: 5,
+		credentials: true,
+		allowMethods: ['GET', 'POST', 'DELETE'],
+		allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
 	})
 )
 // middlewares
@@ -55,27 +65,13 @@ app.use(
 
 // logger
 app.use(async (ctx, next) => {
-	ctx.set(`Access-Control-Allow-Credentials`, true)
+	ctx.cookies.set('sameSite', 'none', { secure: false })
 	const start = new Date()
 	await next()
 	const ms = new Date() - start
 	console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
 
-app.keys = ['_AreYou']
-app.use(
-	session({
-		cookie: {
-			path: '/',
-			httpOnly: true,
-			maxAge: 24 * 60 * 60 * 1000,
-		},
-		store: redisStore({
-			// all: '127.0.0.1:6379',
-			all: `${REDIS_CONF.host}:${REDIS_CONF.prot}`,
-		}),
-	})
-)
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(blog.routes(), blog.allowedMethods())

@@ -15,6 +15,7 @@ module.exports = async (ctx, next) => {
 						id: payload.id,
 					}
 					ctx.state.user = userData
+					ctx.session.user = user
 				}
 			}
 		} catch (err) {

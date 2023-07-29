@@ -36,6 +36,7 @@ const uploadBlog = async body => {
 
 const deleteID = async (id, author) => {
 	let sql = `delete from myBlog.blogs where id='${id}' and author='${author}' `
+	console.error(sql, 'sql');
 	let r = await exec(sql)
 	if (r.affectedRows > 0) return true
 	return false
