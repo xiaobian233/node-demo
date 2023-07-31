@@ -1,5 +1,5 @@
 {
-  "name": "egg",
+  "name": "my egg",
   "version": "1.0.0",
   "description": "",
   "private": true,
@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "egg": "^3",
+    "egg-mysql": "^4.0.0",
     "egg-scripts": "^2"
   },
   "devDependencies": {
@@ -21,8 +22,8 @@
     "node": ">=16.0.0"
   },
   "scripts": {
-    "start": "egg-scripts start --daemon --title=egg-server-egg",
-    "stop": "egg-scripts stop --title=egg-server-egg",
+    "start": "egg-scripts start --daemon --title=egg-server-my egg",
+    "stop": "egg-scripts stop --title=egg-server-my egg",
     "dev": "egg-bin dev",
     "debug": "egg-bin debug",
     "test": "npm run lint -- --fix && npm run test-local",
