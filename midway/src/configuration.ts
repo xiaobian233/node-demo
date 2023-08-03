@@ -9,14 +9,15 @@ import { DefaultErrorFilter } from './filter/default.filter';
 import { NotFoundFilter } from './filter/notfound.filter';
 import { ReportMiddleware } from './middleware/report.middleware';
 import * as crossDomain from '@midwayjs/cross-domain';
-
+import * as staticFile from '@midwayjs/static-file';
 @Configuration({
   imports: [
     koa,
+    crossDomain,
+    staticFile,
     orm,
     redis,
     validate,
-    crossDomain,
     {
       component: info,
       enabledEnvironment: ['local'],

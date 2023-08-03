@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Inject, Post } from '@midwayjs/core';
 import { UserService } from '../service/user.service';
 
-@Controller('/')
+@Controller('/home')
 export class Home {
   @Inject()
   ctx;
@@ -15,10 +15,9 @@ export class Home {
 
   @Post('/login')
   async login(@Body() body) {
-    const r = await this.userService.login(body);
-    console.error(body, 'rrrrrr');
-
-    return r;
+    return body
+    // const r = await this.userService.login(body);
+    // console.error(body, 'rrrrrr');
   }
 
   @Get('/get')

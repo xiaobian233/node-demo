@@ -4,7 +4,7 @@ export default {
   keys: '1690945253999_4437',
   koa: {
     port: 8840,
-    globalPrefix: '/koa2-web',
+    globalPrefix: '/midway-web',
   },
   typeorm: {
     dataSource: {
@@ -22,11 +22,8 @@ export default {
       },
     },
   },
+  cors: {
+    credentials: true,
+    maxAge: 60 * 60,
+  },
 } as MidwayConfig;
-
-export const cors = {
-  credentials: true,
-  origin: '*',
-  allowHeaders: ['Content-Type', 'Authorization', 'Accept'],
-  maxAge: 60 * 60,
-};
